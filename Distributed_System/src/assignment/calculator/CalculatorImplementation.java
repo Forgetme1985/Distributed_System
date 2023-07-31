@@ -6,25 +6,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class CalculatorImplementation extends UnicastRemoteObject implements Calculator {
 
     //Implementation for all remote methods
     private  Stack<Integer> stack;
     private List<Integer> poppedValues = new ArrayList<Integer>();
+    private  boolean isPopping;
     public  CalculatorImplementation() throws RemoteException {
         super();
         stack = new Stack<>();
     }
     @Override
-    public void pushValue(int val) throws RemoteException {
+    public  void pushValue(int val) throws RemoteException {
         stack.push(val);
     }
 
     @Override
-    public void pushOperation(String operator) throws RemoteException {
-        if(!isEmpty())
+    public  void pushOperation(String operator) throws RemoteException {
+        if(!isEmpty() && !isPopping)
         {
+            isPopping = true;
             switch (operator)
             {
                 case "min":
@@ -39,11 +43,12 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
                     pushGCDOfAllPoppedValues();
                     break;
             }
+            isPopping = false;
         }
     }
 
     @Override
-    public int pop() throws RemoteException {
+    public  int pop() throws RemoteException {
         if(!isEmpty())
         {
            return  stack.pop();
@@ -52,12 +57,12 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     }
 
     @Override
-    public boolean isEmpty() throws RemoteException {
+    public  boolean isEmpty() throws RemoteException {
         return stack.isEmpty();
     }
 
     @Override
-    public int delayPop(int millis) throws RemoteException {
+    public  int delayPop(int millis) throws RemoteException {
         try {
             Thread.sleep(millis);
             if(!isEmpty())
@@ -109,7 +114,7 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
         }
         stack.push(lcm);
     }
-    private   int leastCommonMultiple(int a, int b)
+    private  int leastCommonMultiple(int a, int b)
     {
         boolean isFoundLMC = false;
         int scaleFactor = 1;
