@@ -9,6 +9,7 @@ import java.util.Stack;
 
 public class CalculatorImplementation extends UnicastRemoteObject implements Calculator {
 
+    //Implementation for all remote methods
     private  Stack<Integer> stack;
     private List<Integer> poppedValues = new ArrayList<Integer>();
     public  CalculatorImplementation() throws RemoteException {
