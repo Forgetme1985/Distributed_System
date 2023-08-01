@@ -24,9 +24,9 @@ public class CalculatorClient {
                  int delay = Integer.parseInt(lines[lines.length - 1]);
                  for(int i = 0; i < lines.length - 1;i++)
                  {
+                     System.out.println(args[0]);
                     if(lines[i].compareTo("min") == 0)
                     {
-                        System.out.println("min: ");
                         calculator.pushOperation(lines[i]);
                         if(delay > 0)
                         {
@@ -88,6 +88,7 @@ public class CalculatorClient {
 
                  }
             }
+
         }
         catch (Exception e)
         {
