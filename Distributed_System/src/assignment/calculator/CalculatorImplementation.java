@@ -109,12 +109,12 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     {
         try {
             stackHashMap.put(id, new Stack<Integer>());
-            System.out.println("Register successfully");
+            System.out.println("Register successfully for " + id);
             return  true;
         }
         catch (Exception e)
         {
-            System.out.println("Unsuccessful Registration for client " + id + " because ");
+            System.out.println("Unsuccessful Registration for " + id + " because ");
             e.printStackTrace();
             return  false;
         }
