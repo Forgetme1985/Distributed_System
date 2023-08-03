@@ -11,11 +11,14 @@ we have two parameters for the client program: the first one is the input file w
 e.g. inside of the testing.txt file:
 
 1,2,3,min,0
+
 6,5,4,max,0
+
 12,5,9,lcm,0
+
 108,12,20,gcd,3000
 
-The values are before the opeartors (min,max,lcm,gcd) that will be pushed into on the server stack
+The values are before the opeartors (min,max,lcm,gcd) that will be pushed into the server stack
 
 The value is after the operators (min,max,lcm,gcd) that is the delay in milliseconds for popping operations 
 
