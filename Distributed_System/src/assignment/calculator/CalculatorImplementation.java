@@ -8,89 +8,133 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
 
     //Implementation for all remote methods
     private HashMap<String,Stack<Integer>> stackHashMap;
-
+    private  Stack<String> stack;
     //constructor
     public  CalculatorImplementation() throws RemoteException {
         super();
         stackHashMap = new HashMap<String,Stack<Integer>>();
+        stack = new Stack<>();
     }
-    /*pushValue method
+
+
+
+    /*pushValue method with id
     * inputs: the id of the client to identify its stack on the server
     * and the value that would be pushed in its stack
     * */
     @Override
-    public synchronized void pushValue(String id,int val) throws RemoteException {
-        if(!isEmpty(id))
-        {
+    public synchronized void pushValue(String id,int val,boolean useSameStack) throws RemoteException {
+        if(useSameStack)
+            stack.push(id +","+val);
+        else
             stackHashMap.get(id).push(val);
-        }
     }
     /*
-    *pushOperation method
+    *pushOperation method with id
     *the inputs: the id of the client to identify its stack on the server and the operator that would be pushed in its stack
     *the output: popping all current values and pushing the min, the max, the lcm or the gcd in its stack
      */
 
     @Override
-    public synchronized void pushOperation(String id,String operator) throws RemoteException
+    public synchronized void pushOperation(String id,String operator,boolean useSameStack) throws RemoteException
     {
-        if(!isEmpty(id))
+        if(!isEmpty(id,useSameStack))
         {
-            System.out.println(id);
-            switch (operator)
-            {
+            if(useSameStack)
+                System.out.println(id + " use the same stack");
+            else
+                System.out.println(id + " use the client's own stack");
+            switch (operator) {
                 case "min":
                     //popping all values and push the min value of all popped values
-                    pushValue(id,pushMinOfAllPoppedValues(id));
+                    pushValue(id, pushMinOfAllPoppedValues(id,useSameStack), useSameStack);
                     break;
                 case "max":
                     //popping all values and push the max value of all popped values
-                    pushValue(id,pushMaxOfAllPoppedValues(id));
+                    pushValue(id, pushMaxOfAllPoppedValues(id,useSameStack), useSameStack);
                     break;
                 case "lcm":
                     //popping all values and push the lcm value of all popped values
-                    pushValue(id,pushLCMOfAllPoppedValues(id));
+                    pushValue(id, pushLCMOfAllPoppedValues(id,useSameStack), useSameStack);
                     break;
                 case "gcd":
                     //popping all values and push the gcd value of all popped values
-                    pushValue(id,pushGCDOfAllPoppedValues(id));
+                    pushValue(id, pushGCDOfAllPoppedValues(id,useSameStack), useSameStack);
                     break;
             }
         }
     }
     /*
-    * pop method
+    * pop method with id
     * the input: the id of the client to identify its stack on the server
     * the output: popping the value
     * */
     @Override
-    public synchronized int pop(String id) throws RemoteException {
-        if(!isEmpty(id))
-            return  stackHashMap.get(id).pop();
+    public synchronized int pop(String id,boolean useSameStack) throws RemoteException {
+        if(!isEmpty(id,useSameStack))
+        {
+            if(useSameStack) {
+                String[] s;
+                for(int i = stack.size() - 1; i >= 0 ; i--)
+                {
+                    s = stack.get(i).split(",");
+                    if(s[0].compareTo(id) == 0)
+                    {
+                        stack.remove(i);
+                        return Integer.parseInt(s[1]);
+                    }
+
+                }
+            }
+            else
+                return  stackHashMap.get(id).pop();
+        }
         return Integer.MIN_VALUE;// stack is empty
     }
     /*
-     * isEmpty method
+     * isEmpty method with id
      * the input: the id of the client to identify its stack on the server
      * the output: checking its stack on server whether is empty
      * */
     @Override
-    public synchronized boolean isEmpty(String id) throws RemoteException {
-        if(!stackHashMap.isEmpty() && !stackHashMap.get(id).isEmpty())
-            return stackHashMap.get(id).isEmpty();
+    public synchronized boolean isEmpty(String id,boolean useSameStack) throws RemoteException {
+        if(useSameStack)
+        {
+            if(!stack.isEmpty())
+            {
+
+                String[] s;
+                for(int i = stack.size() - 1; i >= 0 ; i--)
+                {
+                    s = stack.get(i).split(",");
+                    if(s[0].compareTo(id) == 0)
+                    {
+                        return stack.isEmpty();
+                    }
+
+                }
+               /* if (s[0] == id) {
+                    return stack.isEmpty();
+                }*/
+            }
+        }
+        else {
+            if (!stackHashMap.isEmpty() && !stackHashMap.get(id).isEmpty())
+                return stackHashMap.get(id).isEmpty();
+        }
         return  false;
     }
     /*
-    * delayPop function
+    * delayPop function with id
     * the input: the id of the client to identify its stack on the server
     * and the delay time in ms for popping operation
     * the output: delay popping in ms
     * */
     @Override
-    public synchronized int delayPop(String id,int millis) throws RemoteException {
+    public synchronized int delayPop(String id,int millis,boolean useSameStack) throws RemoteException {
         try {
             Thread.sleep(millis);
-            return this.pop(id);
+            return this.pop(id,useSameStack);
         }
         catch (Exception e)
         {
@@ -120,6 +164,7 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
         }
 
     }
+
     /*
     *pushMinOfAllPoppedValues method
     *this method is the sub method of the min operation
@@ -128,23 +173,19 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     * and return the min value of all popped values
     *
     * */
-    private synchronized int pushMinOfAllPoppedValues(String id) throws RemoteException {
+    private synchronized int pushMinOfAllPoppedValues(String id,boolean useSameStack) throws RemoteException {
         //Clear and pop all values of the stack
-        List<Integer> poppedValues = new ArrayList<>();
+        List<Integer> poppedValues = popAllValuesForOperator(id,useSameStack);
+        for(int i = 0; i < poppedValues.size(); i++)
+        {
+            System.out.println("Popped values: " + poppedValues.get(i));
+        }
 
-            while (!stackHashMap.get(id).isEmpty()) {
-                poppedValues.add(stackHashMap.get(id).pop());
-            }
-            for(int i = 0; i < poppedValues.size(); i++)
-            {
-                System.out.println("Popped values: " + poppedValues.get(i));
-            }
-
-            //Sort all popped values and push the min value int the stack
-            Collections.sort(poppedValues);
-            int min = poppedValues.get(0);
-            System.out.println("min:" + min);
-            return min;
+        //Sort all popped values and push the min value int the stack
+        Collections.sort(poppedValues);
+        int min = poppedValues.get(0);
+        System.out.println("min:" + min);
+        return min;
     }
     /*
      *pushMaxOfAllPoppedValues method
@@ -154,14 +195,10 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
      * and return the max value of all popped values
      *
      * */
-    private synchronized int pushMaxOfAllPoppedValues(String id) throws RemoteException
+    private synchronized int pushMaxOfAllPoppedValues(String id,boolean useSameStack) throws RemoteException
     {
         //Clear and pop all values of the stack
-        List<Integer> poppedValues = new ArrayList<>();
-        while (!stackHashMap.get(id).isEmpty())
-        {
-            poppedValues.add(stackHashMap.get(id).pop());
-        }
+        List<Integer> poppedValues = popAllValuesForOperator(id,useSameStack);
         for(int i = 0; i < poppedValues.size(); i++)
         {
             System.out.println("Popped values: " + poppedValues.get(i));
@@ -180,14 +217,10 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
      * the output: popping all values of its stack, calculating for the least
      * common multiple (LCM) and return the LCM value
      * */
-    private synchronized int pushLCMOfAllPoppedValues(String id) throws RemoteException
+    private synchronized int pushLCMOfAllPoppedValues(String id,boolean useSameStack) throws RemoteException
     {
         //Clear and pop all values of the stack
-        List<Integer> poppedValues = new ArrayList<>();
-        while (!stackHashMap.get(id).isEmpty())
-        {
-            poppedValues.add(stackHashMap.get(id).pop());
-        }
+        List<Integer> poppedValues = popAllValuesForOperator(id,useSameStack);
         for(int i = 0; i < poppedValues.size(); i++)
         {
             System.out.println("Popped values: " + poppedValues.get(i));
@@ -234,14 +267,10 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
      * the output: popping all values of its stack, calculating for the greatest
      * common divisor (GCD) and return the GCD value
      * */
-    private synchronized int pushGCDOfAllPoppedValues(String id) throws  RemoteException
+    private synchronized int pushGCDOfAllPoppedValues(String id,boolean useSameStack) throws  RemoteException
     {
         //Clear and pop all values of the stack
-        List<Integer> poppedValues = new ArrayList<>();
-        while (!stackHashMap.get(id).isEmpty())
-        {
-            poppedValues.add(stackHashMap.get(id).pop());
-        }
+        List<Integer> poppedValues = popAllValuesForOperator(id,useSameStack);
         for(int i = 0; i < poppedValues.size(); i++)
         {
             System.out.println("Popped values: " + poppedValues.get(i));
@@ -282,6 +311,29 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
             }
         }
         return 0;
+    }
+    private List<Integer> popAllValuesForOperator(String id,boolean useSameStack)
+    {
+        List<Integer> poppedValues = new ArrayList<>();
+        if(useSameStack) {
+            String[] s;
+            for(int i = stack.size() - 1; i >= 0 ; i--)
+            {
+                s = stack.get(i).split(",");
+                if(s[0].compareTo(id) == 0)
+                {
+                    stack.remove(i);
+                    poppedValues.add(Integer.parseInt(s[1]));
+                }
+
+            }
+        }
+        else {
+            while (!stackHashMap.get(id).isEmpty()) {
+                poppedValues.add(stackHashMap.get(id).pop());
+            }
+        }
+        return  poppedValues;
     }
 }
 
