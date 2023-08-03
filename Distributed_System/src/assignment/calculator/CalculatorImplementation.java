@@ -9,10 +9,15 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     //Implementation for all remote methods
     private HashMap<String,Stack<Integer>> stackHashMap;
 
+    //constructor
     public  CalculatorImplementation() throws RemoteException {
         super();
         stackHashMap = new HashMap<String,Stack<Integer>>();
     }
+    /*pushValue method
+    * inputs: the id of the client to identify its stack on the server
+    * and the value that would be pushed in its stack
+    * */
     @Override
     public synchronized void pushValue(String id,int val) throws RemoteException {
         if(!isEmpty(id))
@@ -20,6 +25,11 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
             stackHashMap.get(id).push(val);
         }
     }
+    /*
+    *pushOperation method
+    *the inputs: the id of the client to identify its stack on the server and the operator that would be pushed in its stack
+    *the output: popping all current values and pushing the min, the max, the lcm or the gcd in its stack
+     */
 
     @Override
     public synchronized void pushOperation(String id,String operator) throws RemoteException
@@ -30,34 +40,52 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
             switch (operator)
             {
                 case "min":
+                    //popping all values and push the min value of all popped values
                     pushValue(id,pushMinOfAllPoppedValues(id));
                     break;
                 case "max":
+                    //popping all values and push the max value of all popped values
                     pushValue(id,pushMaxOfAllPoppedValues(id));
                     break;
                 case "lcm":
+                    //popping all values and push the lcm value of all popped values
                     pushValue(id,pushLCMOfAllPoppedValues(id));
                     break;
                 case "gcd":
+                    //popping all values and push the gcd value of all popped values
                     pushValue(id,pushGCDOfAllPoppedValues(id));
                     break;
             }
         }
     }
-
+    /*
+    * pop method
+    * the input: the id of the client to identify its stack on the server
+    * the output: popping the value
+    * */
     @Override
     public synchronized int pop(String id) throws RemoteException {
         if(!isEmpty(id))
             return  stackHashMap.get(id).pop();
         return Integer.MIN_VALUE;// stack is empty
     }
-
+    /*
+     * isEmpty method
+     * the input: the id of the client to identify its stack on the server
+     * the output: checking its stack on server whether is empty
+     * */
     @Override
     public synchronized boolean isEmpty(String id) throws RemoteException {
         if(!stackHashMap.isEmpty() && !stackHashMap.get(id).isEmpty())
             return stackHashMap.get(id).isEmpty();
         return  false;
     }
+    /*
+    * delayPop function
+    * the input: the id of the client to identify its stack on the server
+    * and the delay time in ms for popping operation
+    * the output: delay popping in ms
+    * */
     @Override
     public synchronized int delayPop(String id,int millis) throws RemoteException {
         try {
@@ -70,7 +98,12 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
         }
         return 0;
     }
-
+    /*
+    *registerID method
+    * the input: the id of the client that will be registered with the server
+    * and the client will be supplied its own stack
+    * the output: it is registered successfully whether or not
+    * */
     @Override
     public boolean registerID(String id) throws RemoteException
     {
@@ -87,7 +120,14 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
         }
 
     }
-
+    /*
+    *pushMinOfAllPoppedValues method
+    *this method is the sub method of the min operation
+    * the input: the id of the client to identify its stack on the server
+    * the output: popping all values of its stack, sorting all values
+    * and return the min value of all popped values
+    *
+    * */
     private synchronized int pushMinOfAllPoppedValues(String id) throws RemoteException {
         //Clear and pop all values of the stack
         List<Integer> poppedValues = new ArrayList<>();
@@ -106,6 +146,14 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
             System.out.println("min:" + min);
             return min;
     }
+    /*
+     *pushMaxOfAllPoppedValues method
+     *this method is the sub method of the max operation
+     * the input: the id of the client to identify its stack on the server
+     * the output: popping all values of its stack, sorting all values
+     * and return the max value of all popped values
+     *
+     * */
     private synchronized int pushMaxOfAllPoppedValues(String id) throws RemoteException
     {
         //Clear and pop all values of the stack
@@ -125,6 +173,13 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
         return max;
 
     }
+    /*
+     *pushLCMOfAllPoppedValues method
+     * this method is the sub method of the LCM operation
+     * the input: the id of the client to identify its stack on the server
+     * the output: popping all values of its stack, calculating for the least
+     * common multiple (LCM) and return the LCM value
+     * */
     private synchronized int pushLCMOfAllPoppedValues(String id) throws RemoteException
     {
         //Clear and pop all values of the stack
@@ -146,6 +201,14 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
             return lcm;
 
     }
+    /*
+     *leastCommonMultiple method
+     *
+     * the input: the two values a and b
+     * the output: calculating and return the least common multiple value
+     * of the two values a and b
+     *
+     * */
     private synchronized int leastCommonMultiple(int a, int b)
     {
         boolean isFoundLMC = false;
@@ -165,6 +228,12 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
         }
         return 0;
     }
+    /*pushGCDOfAllPoppedValues method
+     * this method is the sub method of the GCD operation
+     * the input: the id of the client to identify its stack on the server
+     * the output: popping all values of its stack, calculating for the greatest
+     * common divisor (GCD) and return the GCD value
+     * */
     private synchronized int pushGCDOfAllPoppedValues(String id) throws  RemoteException
     {
         //Clear and pop all values of the stack
@@ -187,6 +256,14 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
         return gcd;
 
     }
+    /*
+     *greatestCommonDivisor method
+     *
+     * the input: the two values a and b
+     * the output: calculating and return the greatest common divisor value
+     * of the two values a and b
+     *
+     * */
     private synchronized int greatestCommonDivisor(int a, int b)
     {
         boolean isFoundGCD = false;

@@ -12,7 +12,7 @@ public class CalculatorClient {
             //look up server through registry
             Registry registry = LocateRegistry.getRegistry();
             Calculator calculator = (Calculator) registry.lookup("RemoteCalculator");
-            //testing inputs from the testing.txt files
+            //testing inputs from the *.txt files
             if(calculator.registerID(args[1])) {
                 File testingFile = new File(args[0]);
                 Scanner readingScanner = new Scanner(testingFile);
