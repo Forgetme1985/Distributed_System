@@ -2,9 +2,13 @@
 1) Explanation and the steps to run the system:
 
 In order to run the system, in the terminal run the commands below:
+
 Run registry: rmiregistry 
+
 Run server: java assignment.calculator.CalculatorServer
+
 Test client: java assignment.calculator.CalculatorClient testing.txt client
+
 
 we have two parameters for the client program: the first one is the input file with some combinations of data for testing. The second one is the the ID of the client that is used to register with server and server will provide one stack for the client.
 
@@ -23,9 +27,10 @@ The values are before the opeartors (min,max,lcm,gcd) that will be pushed into t
 The value is after the operators (min,max,lcm,gcd) that is the delay in milliseconds for popping operations 
 
 note: in order to test many clients at the same time, we can run: 
-java assignment.calculator.CalculatorClient testing1.txt client1 & java assignment.calculator.CalculatorClient testing2.txt client2 & java assignment.calculator.CalculatorClient testing3.txt client3 
+java assignment.calculator.CalculatorClient testing1.txt client1 & java assignment.calculator.CalculatorClient testing2.txt client2 & java assignment.calculator.CalculatorClient testing3.txt client3
 
 2) There are some already shell files for testing:
+   
 RMIRegistry
 
 CalculatorServer
