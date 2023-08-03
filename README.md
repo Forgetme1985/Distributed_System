@@ -27,13 +27,18 @@ java assignment.calculator.CalculatorClient testing1.txt client1 & java assignme
 
 2) There are some already shell files for testing:
 RMIRegistry
+
 CalculatorServer
+
 CalculatorClient
 
 In order to run shell files in the mac terminal:
-sh RMIRegistry.sh
-sh CalculatorServer.sh
-sh CalculatorClient.sh
+
+open the new terminal: sh RMIRegistry.sh
+
+open the new terminal: sh CalculatorServer.sh
+
+open the new terminal: sh CalculatorClient.sh
 
 note: CalculatorClient.sh file is the script to run for testing 4 clients.
 IDs: client1, client2, client3 and client4; also with 4 testings file: testing1.txt
