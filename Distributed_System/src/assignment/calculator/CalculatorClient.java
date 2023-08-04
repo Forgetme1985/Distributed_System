@@ -16,11 +16,17 @@ public class CalculatorClient {
             Calculator calculator = (Calculator) registry.lookup("RemoteCalculator");
             //testing inputs from the *.txt files
             if(calculator.registerID(args[1])) {
-                System.out.println("Testing using the same stack");
-                testingCalculator(calculator,args[0],args[1],true);
+                int isUseTheSameStack = Integer.parseInt(args[2]);
+                if(isUseTheSameStack == 1) {
+                    System.out.println("Testing using the same stack");
+                    testingCalculator(calculator, args[0], args[1], true);
+                }
+                else
+                {
+                     System.out.println("Testing using the different stacks");
+                     testingCalculator(calculator,args[0],args[1],false);
+                }
 
-                System.out.println("Testing using the different stacks");
-                testingCalculator(calculator,args[0],args[1],false);
             }
         }
         catch (Exception e)

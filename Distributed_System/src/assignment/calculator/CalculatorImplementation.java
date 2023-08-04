@@ -19,7 +19,8 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
 
 
     /*pushValue method with id
-    * inputs: the id of the client to identify its stack on the server
+    * inputs: the id of the client
+    * to identify its stack on the server if useSameStack is false
     * and the value that would be pushed in its stack
     * */
     @Override
@@ -31,7 +32,9 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     }
     /*
     *pushOperation method with id
-    *the inputs: the id of the client to identify its stack on the server and the operator that would be pushed in its stack
+    *the inputs: the id of the client
+    * to identify its stack on the server if useSameStack is false
+    * and the operator that would be pushed in its stack
     *the output: popping all current values and pushing the min, the max, the lcm or the gcd in its stack
      */
 
@@ -66,7 +69,8 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     }
     /*
     * pop method with id
-    * the input: the id of the client to identify its stack on the server
+    * the input: the id of the client
+    * to identify its stack on the server if useSameStack is false
     * the output: popping the value
     * */
     @Override
@@ -93,7 +97,8 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     }
     /*
      * isEmpty method with id
-     * the input: the id of the client to identify its stack on the server
+     * the input: the id of the client
+     * to identify its stack on the server if useSameStack is false
      * the output: checking its stack on server whether is empty
      * */
     @Override
@@ -113,9 +118,6 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
                     }
 
                 }
-               /* if (s[0] == id) {
-                    return stack.isEmpty();
-                }*/
             }
         }
         else {
@@ -126,7 +128,8 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     }
     /*
     * delayPop function with id
-    * the input: the id of the client to identify its stack on the server
+    * the input: the id of the client
+    * to identify its stack on the server if useSameStack is false
     * and the delay time in ms for popping operation
     * the output: delay popping in ms
     * */
@@ -146,7 +149,7 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     *registerID method
     * the input: the id of the client that will be registered with the server
     * and the client will be supplied its own stack
-    * the output: it is registered successfully whether or not
+    * the output: it is registered successfully?
     * */
     @Override
     public boolean registerID(String id) throws RemoteException
@@ -168,7 +171,8 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     /*
     *pushMinOfAllPoppedValues method
     *this method is the sub method of the min operation
-    * the input: the id of the client to identify its stack on the server
+    * the input: the id of the client
+    * to identify its stack on the server if useSameStack is false
     * the output: popping all values of its stack, sorting all values
     * and return the min value of all popped values
     *
@@ -190,7 +194,8 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     /*
      *pushMaxOfAllPoppedValues method
      *this method is the sub method of the max operation
-     * the input: the id of the client to identify its stack on the server
+     * the input: the id of the client
+     * to identify its stack on the server if useSameStack is false
      * the output: popping all values of its stack, sorting all values
      * and return the max value of all popped values
      *
@@ -213,7 +218,8 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     /*
      *pushLCMOfAllPoppedValues method
      * this method is the sub method of the LCM operation
-     * the input: the id of the client to identify its stack on the server
+     * the input: the id of the client
+     * to identify its stack on the server if useSameStack is false
      * the output: popping all values of its stack, calculating for the least
      * common multiple (LCM) and return the LCM value
      * */
@@ -263,7 +269,8 @@ public class CalculatorImplementation extends UnicastRemoteObject implements Cal
     }
     /*pushGCDOfAllPoppedValues method
      * this method is the sub method of the GCD operation
-     * the input: the id of the client to identify its stack on the server
+     * the input: the id of the client
+     * to identify its stack on the server if useSameStack is false
      * the output: popping all values of its stack, calculating for the greatest
      * common divisor (GCD) and return the GCD value
      * */
