@@ -55,13 +55,17 @@ testing2.txt, testing3.txt, testing4.txt using the same stack
 Tesing case: all clients using the different stacks
 
 open the new terminal: sh RMIRegistry.sh
+
 open the new terminal: sh CalculatorServer.sh
+
 open the new terminal: sh CalculatorClient_DifferentStacks.sh
 
 Testing case:  the client 1 & the client 2 using the same stack but the client 3 and the client 4 using their own stacks
 
 open the new terminal: sh RMIRegistry.sh
+
 open the new terminal: sh CalculatorServer.sh
+
 open the new terminal: sh CalculatorClient_Combination.sh
 
 
