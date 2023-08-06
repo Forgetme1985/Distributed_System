@@ -1,1 +1,1 @@
-java assignment.calculator.CalculatorServer
+java assignment.calculator.CalculatorServer 2000

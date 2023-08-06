@@ -1,1 +1,1 @@
-rmiregistry 
+rmiregistry 2000

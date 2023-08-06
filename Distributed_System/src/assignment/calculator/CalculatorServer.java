@@ -11,7 +11,7 @@ public class CalculatorServer {
         try {
             //Create server and bind to registry
             CalculatorImplementation calculatorImplementation = new CalculatorImplementation();
-            Registry registry = LocateRegistry.getRegistry();
+            Registry registry = LocateRegistry.getRegistry(Integer.parseInt(args[0]));
             registry.bind("RemoteCalculator",calculatorImplementation);
             System.out.println("Server is ready");
         }

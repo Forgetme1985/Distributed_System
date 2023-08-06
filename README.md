@@ -3,15 +3,19 @@
 
 In order to run the system, in the terminal run the commands below:
 
-Run registry: rmiregistry 
+Run registry: rmiregistry 2000
 
-Run server: java assignment.calculator.CalculatorServer
+we have one parameter for rmiregistry, this parameter tells us about the port that server is going to use
 
-Test client: java assignment.calculator.CalculatorClient testing.txt client 1 
-			or java assignment.calculator.CalculatorClient testing.txt client 0
+Run server: java assignment.calculator.CalculatorServer 2000 
+
+we have one parameter for the server program, this parameter tells us about the port that server is using 
+
+Test client: java assignment.calculator.CalculatorClient testing.txt client 1 2000 
+			or java assignment.calculator.CalculatorClient testing.txt client 0 2000
 
 
-we have three parameters for the client program: the first one is the input file with some combinations of data for testing. The second one is the the ID of the client that is used to register with server and server will provide one stack for the client. The third paramenter to decide whether to use the same stack on server, 1 is "using the same stack" otherwise 0 is "using differnt stacks"
+we have four parameters for the client program: the first one is the input file with some combinations of data for testing. The second one is the the ID of the client that is used to register with server and server will provide one stack for the client. The third parameter to decide whether to use the same stack on server, 1 is "using the same stack" otherwise 0 is "using different stacks". The last parameter tells us about the port that server is using
 
 e.g. inside of the testing.txt file:
 
@@ -23,7 +27,7 @@ e.g. inside of the testing.txt file:
 
 108,12,20,gcd,3000
 
-The values are before the opeartors (min,max,lcm,gcd) that will be pushed into the server stack
+The values are before the operators (min,max,lcm,gcd) that will be pushed into the server stack
 
 The value is after the operators (min,max,lcm,gcd) that is the delay in milliseconds for popping operations 
 
@@ -52,7 +56,7 @@ note: CalculatorClient_SameStack.sh file is the script to run for testing 4 clie
 IDs: client1, client2, client3 and client4; also with 4 testings file: testing1.txt
 testing2.txt, testing3.txt, testing4.txt using the same stack 
 
-Tesing case: all clients using the different stacks
+Testing case: all clients using the different stacks
 
 open the new terminal: sh RMIRegistry.sh
 
