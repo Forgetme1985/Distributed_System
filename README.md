@@ -32,7 +32,7 @@ The values are before the operators (min,max,lcm,gcd) that will be pushed into t
 The value is after the operators (min,max,lcm,gcd) that is the delay in milliseconds for popping operations 
 
 note: in order to test many clients at the same time, we can run: 
-java assignment.calculator.CalculatorClient testing1.txt client1 1 & java assignment.calculator.CalculatorClient testing2.txt client2  1 & java assignment.calculator.CalculatorClient testing3.txt client3 1
+java assignment.calculator.CalculatorClient testing1.txt client1 1 2000 & java assignment.calculator.CalculatorClient testing2.txt client2  1 2000 & java assignment.calculator.CalculatorClient testing3.txt client3 1 2000
 
 2) There are some already shell files for testing:
    
