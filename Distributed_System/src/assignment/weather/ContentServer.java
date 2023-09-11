@@ -1,31 +1,41 @@
 package assignment.weather;
 
 import java.io.*;
-import java.net.Socket;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class ContentServer extends WeatherConnection {
+    /**
+     *
+     * @param serverAddress : the address of the aggregation server
+     * @param weatherFile: the weather.txt
+     *  Start content server and sending http put every 20 seconds
+     */
     public ContentServer(String serverAddress,File weatherFile) {
         super(serverAddress);
         try {
             while (!socket.isClosed()) {
-                Thread.sleep(3000);
-                System.out.println("Send MSG from client");
-                List<String> weatherData = readingWeatherData(weatherFile);
-                String httpPostMessage = "PUT /weather.json HTTP/1.1\n";
-                httpPostMessage += "User-Agent: ATOMClient/1/0\n";
-                httpPostMessage += "Content-Type: text/json\n";
-                String jsonString = JsonParser.getInstance().writeJson(weatherData);
-                httpPostMessage += "Content-Length: " + (jsonString.length() + 2) + "\n";
-                httpPostMessage += (jsonString + "\n");
+                System.out.println("Send data from content server");
+                LinkedHashMap<String,String> weatherData = readingWeatherData(weatherFile);
+                String httpPostMessage = "PUT /weather.json HTTP/1.1\r\n";
+                httpPostMessage += "User-Agent: ATOMClient/1/0\r\n";
+                httpPostMessage += "Content-Type: application/json\r\n";
+                lamportClock.increaseCounter();
+                String jsonString = JsonParser.getInstance().writeJson(lamportClock,weatherData);
+                httpPostMessage += "Content-Length: " + jsonString.length()  + "\r\n";
+                httpPostMessage += (jsonString + "\r\n");
                 socketWriter.println(httpPostMessage);
                 socketWriter.flush();
+
                 String inMsg = socketReader.readLine();
-                System.out.println("Server: " + inMsg);
+                while (!inMsg.contains("WeatherInformation") && !inMsg.contains("lamportClock"))
+                {
+                    System.out.println(inMsg);
+                    inMsg = socketReader.readLine();
+                }
+                System.out.println(inMsg);
+                WeatherInformation weatherInformation = JsonParser.getInstance().readJson(inMsg);
+                lamportClock.updateCounterReceive(weatherInformation.clockCounter);
+                Thread.sleep(20000);
             }
         }
         catch (Exception e)
@@ -52,51 +62,7 @@ public class ContentServer extends WeatherConnection {
         {
             File weatherFile = new File(args[1]);
             try {
-                //the first time to send HTTP CREATE
                 ContentServer contentServer = new ContentServer(args[0],weatherFile);
-                // contentServer.postHTTP(contentServer.readingWeatherData(weatherFile));
-                //String[] response = contentServer.getResponse().split(" ");
-                //int statusCode = Integer.parseInt(response[1]);
-
-                /*if(statusCode == 201)
-                {
-                    System.out.println("Created");
-                    Thread.sleep(3000);
-                    System.out.println("Send new data");
-                    contentServer.postHTTP(contentServer.readingWeatherData(weatherFile));
-                    response = contentServer.getResponse().split(" ");
-                    System.out.println(response[0]);
-                    statusCode = Integer.parseInt(response[1]);
-                }*/
-                /*while (statusCode == 200)
-                {
-                    System.out.println("OK");
-                    Thread.sleep(3000);
-                    System.out.println("Send new data");
-                    contentServer.postHTTP(contentServer.readingWeatherData(weatherFile));
-                    response = contentServer.getResponse().split(" ");
-                    statusCode = Integer.parseInt(response[1]);
-                }
-                if(statusCode == 204)
-                {
-
-                }
-                else  if(statusCode == 400)
-                {
-
-                }
-                else  if(statusCode == 500)
-                {
-
-                }*/
-               // contentServer.postHTTP(weatherData);
-                /*if(contentServer.statusCode == 201)
-                {
-                    while (!contentServer.isClosedSocket()) {
-                        System.out.println("Send msg to server");
-
-                    }
-                }*/
             }
             catch (Exception e)
             {
@@ -108,13 +74,14 @@ public class ContentServer extends WeatherConnection {
             System.exit(0);
         }
     }
-    private  List<String> readingWeatherData(File weatherFile)
+    private LinkedHashMap<String,String> readingWeatherData(File weatherFile)
     {
-        List<String> weatherData = new ArrayList<>();
+        LinkedHashMap<String,String> weatherData = new LinkedHashMap<>();
         try {
             Scanner readingScanner = new Scanner(weatherFile);
             while (readingScanner.hasNextLine()) {
-                weatherData.add(readingScanner.nextLine());
+                String[] tokens = readingScanner.nextLine().split(":");
+                weatherData.put(tokens[0],tokens[1]);
             }
         }
         catch (Exception e)
